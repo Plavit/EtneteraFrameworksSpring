@@ -1,10 +1,7 @@
 package com.etnetera.hr.data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 
 /**
  * Simple data entity describing basic properties of every JavaScript framework.
@@ -22,6 +19,9 @@ public class JavaScriptFramework {
 	@Column(nullable = false, length = 30)
 	private String name;
 
+    @OneToMany(cascade=CascadeType.ALL, mappedBy = "framework", orphanRemoval = true)
+    private List<JavaScriptFrameworkVersion> versions;
+
 	public JavaScriptFramework() {
 	}
 
@@ -30,7 +30,7 @@ public class JavaScriptFramework {
 	}
 
 	public Long getId() {
-		return id;
+		return this.id;
 	}
 
 	public void setId(Long id) {
@@ -38,12 +38,16 @@ public class JavaScriptFramework {
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public void setName(String name) {
 		this.name = name;
 	}
+
+	//TODO add version
+
+    //todo get versions
 
 	@Override
 	public String toString() {
