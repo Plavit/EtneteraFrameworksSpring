@@ -1,6 +1,9 @@
 package com.etnetera.hr.data;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 
 @Entity
@@ -10,20 +13,33 @@ public class JavaScriptFrameworkVersion {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    //Represents the version of a framework
+    @Size(max = 30)
+    @NotEmpty
     @Column(nullable = false, length = 30)
     private String versionName;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    private JavaScriptFramework framework;
-
     //Represents date when particular version is deprecated
+    @Column
     private LocalDate deprecationDate;
 
     //Represents irrational hype level as per specification
+    @Column
+    @Min(0)
+    @Max(1000)
     private long hypeLevel;
+
+    @JoinColumn
+    @ManyToOne
+    @JsonBackReference
+    private JavaScriptFramework framework;
+
+    public JavaScriptFrameworkVersion() {
+    }
 
     public JavaScriptFrameworkVersion(String version) {
         this.versionName = version;
+        this.framework=framework;
     }
 
     public JavaScriptFramework getFramework() {
@@ -73,5 +89,17 @@ public class JavaScriptFrameworkVersion {
     public void setDeprecationDate(LocalDate date) {
 
         this.deprecationDate = date;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder fw=new StringBuilder();
+        if(this.framework == null){
+            fw.append("N/A");
+        }else {
+            fw.append(this.framework.getName());
+        }
+
+        return "JSF version [id=" + this.id + ", name=" + this.versionName + ", deprecation: " + this.deprecationDate + ", hype level: " + this.hypeLevel + ", Framework: " + fw.toString() + "]";
     }
 }
